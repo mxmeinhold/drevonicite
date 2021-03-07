@@ -1,6 +1,8 @@
 #include <stdio.h> // fprintf()
-#include <unistd.h> // getopt()
+#include <unistd.h> // getopt(), access()
 #include <string.h> // memset()
+#include <errno.h> // errno and access() errors
+#include <pcap/pcap.h>
 
 #include "args.h"
 
@@ -22,11 +24,39 @@ int parse_args(int argc, char** argv, struct args* args) {
         }
     }
 
-    if (!args->file) {
+    if (args->file) {
+        if (access(args->file, R_OK)) {
+            switch (errno) {
+                case EACCES:
+                    fprintf(stderr, "Unable to open file for reading: %s\n", args->file);
+                    return -2;
+                case ENOENT:
+                    fprintf(stderr, "File does not exist: %s\n", args->file);
+                    return -2;
+                case ELOOP:
+                    fprintf(stderr, "A loop exists in symbolic links encountered during resolution of the file argument.\n");
+                    return -2;
+                default:
+                    return -2;
+            }
+        }
+    } else {
         if (optind == argc) {
             // No data specified
-            // TODO list the available interfaces
-            fprintf(stderr, "Interface or filepath expected.\n");
+            pcap_if_t* alldevs;
+            pcap_findalldevs(&alldevs, NULL);
+
+            if (alldevs != NULL) {
+                fprintf(stderr,
+                        "Please specify a file or one of the following interfaces:\n"
+                       );
+                while (alldevs != NULL) {
+                    fprintf(stderr, "%s\n", alldevs->name);
+                    alldevs = alldevs->next;
+                }
+            }
+            fprintf(stderr, "\n");
+            pcap_freealldevs(alldevs);
             goto failure;
         } else {
             // We have at least one acceptable interface
