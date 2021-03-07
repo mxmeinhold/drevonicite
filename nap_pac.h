@@ -7,6 +7,7 @@
 #include "args.h" // struct args
 
 pcap_t* init_pcap(const struct args* args);
+struct ether_addr* cap_pkt(pcap_t* handle);
 void stop(pcap_t* handle);
 
 #endif

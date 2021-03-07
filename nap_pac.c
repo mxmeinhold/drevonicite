@@ -3,6 +3,7 @@
 
 #include "nap_pac.h"
 #include "args.h" // struct args
+#include "print_dlt.h" // print_dlt_name()
 
 
 pcap_t* init_pcap(const struct args* args) {
@@ -75,6 +76,20 @@ pcap_t* init_pcap(const struct args* args) {
     int datalink_type = pcap_datalink(handle);
     printf("DLT: %d\n", datalink_type);
     return handle;
+}
+
+
+struct ether_addr* cap_pkt(pcap_t* handle) {
+    int datalink_type = pcap_datalink(handle);
+
+    struct pcap_pkthdr h;
+    const unsigned char* pktdata = pcap_next(handle, &h);
+
+    printf("Packet length: %d\n", h.caplen);
+
+    print_dlt_name(datalink_type);
+
+    return NULL;
 }
 
 

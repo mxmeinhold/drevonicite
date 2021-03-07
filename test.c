@@ -27,6 +27,9 @@ int main(int argc, char** argv) {
         return -2; // TODO document error codes
     }
 
+    for (int i = 0; i < 10; i++)
+        cap_pkt(handle);
+
     stop(handle);
 
     return 0;
