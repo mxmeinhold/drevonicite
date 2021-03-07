@@ -1,6 +1,7 @@
 #include <stdio.h> // printf()
 
 #include "args.h"
+#include "nap_pac.h"
 
 
 int main(int argc, char** argv) {
@@ -20,6 +21,13 @@ int main(int argc, char** argv) {
         args.interface,
         args.promiscuous? "true":"false"
     );
+
+    pcap_t* handle = init_pcap(&args);
+    if (!handle) {
+        return -2; // TODO document error codes
+    }
+
+    stop(handle);
 
     return 0;
 }
