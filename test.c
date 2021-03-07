@@ -11,7 +11,15 @@ int main(int argc, char** argv) {
         return -1; // TODO document error codes
     }
 
-    printf("Args: {\n\tfile: %s\n\tiface: %s\n}\n", args.file, args.interface);
+    printf("Args: {\n"
+            "\tfile: %s\n"
+            "\tiface: %s\n"
+            "\tpromisc: %s\n"
+        "}\n",
+        args.file,
+        args.interface,
+        args.promiscuous? "true":"false"
+    );
 
     return 0;
 }

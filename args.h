@@ -1,11 +1,15 @@
 #ifndef DREVONICITE_ARGS_H
 #define DREVONICITE_ARGS_H
 
+#include <stdbool.h>
+
 struct args {
     // The name of the pcap file to read from
     char* file;
     // The name of the interface to read from
     char* interface;
+    // Whether to open the interface in promiscuous mode
+    bool promiscuous;
 };
 
 /**

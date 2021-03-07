@@ -12,8 +12,11 @@ int parse_args(int argc, char** argv, struct args* args) {
     memset(args, 0, sizeof(struct args));
 
     int opt;
-    while ((opt = getopt(argc, argv, "f:")) != -1) {
+    while ((opt = getopt(argc, argv, "pf:")) != -1) {
         switch ((char) opt) {
+            case 'p':
+                args->promiscuous = 1;
+                break;
             case 'f':
                 args->file = optarg;
                 break;
@@ -71,7 +74,7 @@ int parse_args(int argc, char** argv, struct args* args) {
     return 0;
 
 failure:
-    fprintf(stderr, "Usage: %s interface_name\n", argv[0]);
-    fprintf(stderr, "Or: %s -f pcap_file_path\n", argv[0]);
+    fprintf(stderr, "Usage: %s [-p] interface_name\n", argv[0]);
+    fprintf(stderr, "Or: %s [-p] -f pcap_file_path\n", argv[0]);
     return -1;
 }
